@@ -37,12 +37,12 @@
 <body class="bg-slate-50 text-slate-900 antialiased selection:bg-slate-900 selection:text-white">
     <!-- Welcome screen: the first tap opens the card and starts the song -->
     <div id="introScreen" style="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;cursor:pointer;background:linear-gradient(160deg,#fff7ed 0%,#fdf2f8 50%,#f8fafc 100%);transition:opacity .7s ease;-webkit-tap-highlight-color:transparent;">
-        <div style="font-size:64px;line-height:1;margin-bottom:20px;animation:introPulse 1.6s ease-in-out infinite;">💌</div>
+        <div id="introEnvelope" role="button" aria-label="Open the envelope" style="font-size:120px;line-height:1;margin-bottom:24px;cursor:pointer;animation:introPulse 1.6s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(236,72,153,.25));user-select:none;-webkit-user-select:none;">💌</div>
         <p style="font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#94a3b8;margin:0 0 10px;">இனிய திருமண நல்வாழ்த்துக்கள்</p>
         <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(26px,7vw,44px);font-weight:800;color:#0f172a;margin:0 0 28px;">Thusharahan &amp; Mathumitha</h1>
         <p id="introHint" style="font-size:15px;color:#64748b;margin:0;">Loading… 🎵</p>
     </div>
-    <style>@keyframes introPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}</style>
+    <style>@keyframes introPulse{0%,100%{transform:scale(1) rotate(0)}25%{transform:scale(1.08) rotate(-6deg)}50%{transform:scale(1.12) rotate(0)}75%{transform:scale(1.08) rotate(6deg)}}@keyframes envOpen{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-8deg)}100%{transform:scale(3) rotate(0);opacity:0}}</style>
 
 
     <!-- Top Action Bar (For Editing, Saving HTML, & Printing QR Sticker) -->
@@ -349,15 +349,18 @@
             } catch (e) { console.error('Song load failed', e); }
             music.volume = 1.0;
             // Song is ready now: tell the guest to tap
-            document.getElementById('introHint').textContent = 'Tap anywhere to open 🎵';
+            document.getElementById('introHint').textContent = 'Tap the envelope to open 💌';
 
             var opened = false;
             function openCard() {
                 if (opened) return;
                 opened = true;
+                var env = document.getElementById('introEnvelope');
+                if (env) env.style.animation = 'envOpen .7s ease-in forwards';
+                intro.style.transitionDelay = '.35s';
                 intro.style.opacity = '0';
                 intro.style.pointerEvents = 'none';
-                setTimeout(function () { intro.remove(); }, 800);
+                setTimeout(function () { intro.remove(); }, 1200);
                 if (typeof confetti === 'function') {
                     confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#0f172a', '#ec4899', '#f59e0b'] });
                 }
